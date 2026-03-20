@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="InventoryController">
+
+   <top>
+      <Label text="Inventory Management System"
+             BorderPane.alignment="CENTER">
+         <font>
+            <Font size="24"/>
+         </font>
+      </Label>
+   </top>
+
+   <center>
+      <TableView fx:id="tableView">
+         <columns>
+            <TableColumn fx:id="idColumn" text="ID"/>
+            <TableColumn fx:id="nameColumn" text="Name"/>
+            <TableColumn fx:id="quantityColumn" text="Quantity"/>
+            <TableColumn fx:id="priceColumn" text="Price"/>
+         </columns>
+      </TableView>
+   </center>
+
+   <bottom>
+      <HBox spacing="10" alignment="CENTER">
+         <Button text="Add Product" onAction="#handleAddProduct"/>
+         <Button text="Remove Product" onAction="#handleRemoveProduct"/>
+         <Button text="Exit" onAction="#handleExit"/>
+      </HBox>
+   </bottom>
+
+</BorderPane>
