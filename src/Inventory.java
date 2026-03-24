@@ -9,6 +9,11 @@ public class Inventory {
         products = new ArrayList<>();
     }
 
+    // Getter for products list  ← ADD THIS
+    public ArrayList<Product> getProducts() {
+        return products;
+    }
+
     // Add product
     public void addProduct(Product product) {
         products.add(product);
