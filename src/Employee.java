@@ -2,8 +2,19 @@ public class Employee extends User {
 
     private String position;
 
-    public Employee(int userId, String username, String password, String position) {
-        super(userId, username, password);
+    public Employee(int userId,
+                    String username,
+                    String passwordHash,
+                    String email,
+                    String position) {
+
+        // Automatically assign STAFF role for employees
+        super(userId,
+                username,
+                passwordHash,
+                email,
+                UserRole.STAFF);
+
         this.position = position;
     }
 
@@ -11,8 +22,6 @@ public class Employee extends User {
         return position;
     }
 
-    @Override
-    public String getRole() {
-        return "Employee";
-    }
+    // DO NOT override getRole() now
+    // It already returns UserRole from User
 }

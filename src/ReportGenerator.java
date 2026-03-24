@@ -4,7 +4,7 @@ public class ReportGenerator {
 
         double total = 0;
 
-        for (Product p : inventory.getProducts()) {
+        for (Product p : inventory.getAllProducts()) {
             total += p.getPrice() * p.getQuantity();
         }
 
@@ -15,7 +15,7 @@ public class ReportGenerator {
 
         System.out.println("Low Stock Products:");
 
-        for (Product p : inventory.getProducts()) {
+        for (Product p : inventory.getAllProducts()) {
             if (p.getQuantity() < 5) {
                 System.out.println(
                         p.getName() + " - Quantity: " + p.getQuantity()

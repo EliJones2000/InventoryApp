@@ -6,7 +6,7 @@ public class FileManager {
     public void saveInventory(Inventory inventory, String filename) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
 
-            for (Product p : inventory.getProducts()) {
+            for (Product p : inventory.getAllProducts()) {
                 writer.println(
                         p.getProductId() + "," +
                                 p.getName() + "," +

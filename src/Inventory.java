@@ -1,27 +1,33 @@
 import java.util.ArrayList;
+import java.util.List;
 
 public class Inventory {
 
-    private ArrayList<Product> products;
+    private List<Product> products;
 
     // Constructor
     public Inventory() {
         products = new ArrayList<>();
     }
 
-    // Getter for products list  ← ADD THIS
-    public ArrayList<Product> getProducts() {
-        return products;
-    }
-
-    // Add product
+    // ==============================
+    // Add Product
+    // ==============================
     public void addProduct(Product product) {
+        if (product == null) {
+            System.out.println("Cannot add null product.");
+            return;
+        }
+
         products.add(product);
         System.out.println("Product added successfully.");
     }
 
-    // Remove product by ID
+    // ==============================
+    // Remove Product By ID
+    // ==============================
     public boolean removeProduct(int productId) {
+
         for (Product p : products) {
             if (p.getProductId() == productId) {
                 products.remove(p);
@@ -29,11 +35,14 @@ public class Inventory {
                 return true;
             }
         }
+
         System.out.println("Product not found.");
         return false;
     }
 
-    // Search product by ID
+    // ==============================
+    // Search By ID
+    // ==============================
     public Product searchById(int productId) {
         for (Product p : products) {
             if (p.getProductId() == productId) {
@@ -43,7 +52,9 @@ public class Inventory {
         return null;
     }
 
-    // Search product by name
+    // ==============================
+    // Search By Name
+    // ==============================
     public Product searchByName(String name) {
         for (Product p : products) {
             if (p.getName().equalsIgnoreCase(name)) {
@@ -53,8 +64,26 @@ public class Inventory {
         return null;
     }
 
-    // Display all products
+    // ==============================
+    // Get All Products (Read Only)
+    // ==============================
+    public List<Product> getAllProducts() {
+        return new ArrayList<>(products); // Return copy (safer)
+    }
+
+    // ==============================
+    // Clear Entire Inventory (Admin Use)
+    // ==============================
+    public void clearAllProducts() {
+        products.clear();
+        System.out.println("Inventory cleared.");
+    }
+
+    // ==============================
+    // Display All Products
+    // ==============================
     public void displayAllProducts() {
+
         if (products.isEmpty()) {
             System.out.println("Inventory is empty.");
             return;
@@ -65,21 +94,32 @@ public class Inventory {
         }
     }
 
-    // Calculate total inventory value
+    // ==============================
+    // Calculate Total Inventory Value
+    // ==============================
     public double calculateTotalValue() {
         double total = 0;
+
         for (Product p : products) {
             total += p.getPrice() * p.getQuantity();
         }
+
         return total;
     }
 
-    // Display low stock products
-    public void displayLowStock() {
+    // ==============================
+    // Low Stock Products
+    // ==============================
+    public List<Product> getLowStockProducts() {
+
+        List<Product> lowStock = new ArrayList<>();
+
         for (Product p : products) {
             if (p.isLowStock()) {
-                System.out.println("LOW STOCK ALERT: " + p);
+                lowStock.add(p);
             }
         }
+
+        return lowStock;
     }
 }
