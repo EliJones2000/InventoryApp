@@ -1,9 +1,9 @@
 public class User {
-    private int userId;
-    private String username;
-    private String passwordHash; // Use secure password handling, not plain text
-    private String email;
-    private UserRole role; // Using an Enum for roles (e.g., ADMIN, MANAGER)
+    protected int userId;
+    protected String username;
+    protected String passwordHash; // Use secure password handling, not plain text
+    protected String email;
+    protected UserRole role; // Using an Enum for roles (e.g., ADMIN, MANAGER)
 
     // Enum for User Roles
     public enum UserRole {

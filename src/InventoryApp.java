@@ -1,12 +1,20 @@
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.util.Objects;
+
 public class InventoryApp extends Application {
+
+    private Stage stg;
 
     @Override
     public void start(Stage stage) throws Exception {
+        stg = stage;//for changing login.fxml to inventory fxml
         FXMLLoader fxmlLoader = new FXMLLoader(
                 getClass().getResource("inventory.fxml")
         );
@@ -15,6 +23,15 @@ public class InventoryApp extends Application {
         stage.setTitle("Inventory Management System");
         stage.setScene(scene);
         stage.show();
+
+        //Login fxml
+
+
+    }
+//to method to allow change from login.fxml to inventory.fxml
+    public void changeScene(String fxml) throws IOException {
+        Parent pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Inventory.fxml")));
+        stg.getScene().setRoot(pane);
     }
 
     public static void main(String[] args) {
