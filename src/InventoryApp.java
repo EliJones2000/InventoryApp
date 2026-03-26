@@ -24,13 +24,12 @@ public class InventoryApp extends Application {
         stage.setScene(scene);
         stage.show();
 
-        //Login fxml
 
 
     }
-//to method to allow change from login.fxml to inventory.fxml
+//method to allow change from login.fxml to inventory.fxml
     public void changeScene(String fxml) throws IOException {
-        Parent pane = FXMLLoader.load(getClass().getResource(fxml));
+        Parent pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxml)));
         stg.getScene().setRoot(pane);
     }
 
