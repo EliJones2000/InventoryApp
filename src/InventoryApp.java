@@ -10,13 +10,13 @@ import java.util.Objects;
 
 public class InventoryApp extends Application {
 
-    private Stage stg;
+    private static Stage stg;
 
     @Override
     public void start(Stage stage) throws Exception {
         stg = stage;//for changing login.fxml to inventory fxml
         FXMLLoader fxmlLoader = new FXMLLoader(
-                getClass().getResource("inventory.fxml")
+                getClass().getResource("Login.fxml")
         );
 
         Scene scene = new Scene(fxmlLoader.load());
@@ -30,7 +30,7 @@ public class InventoryApp extends Application {
     }
 //to method to allow change from login.fxml to inventory.fxml
     public void changeScene(String fxml) throws IOException {
-        Parent pane = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("Inventory.fxml")));
+        Parent pane = FXMLLoader.load(getClass().getResource(fxml));
         stg.getScene().setRoot(pane);
     }
 
