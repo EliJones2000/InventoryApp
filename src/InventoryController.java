@@ -1,10 +1,7 @@
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 public class InventoryController {
 
@@ -23,47 +20,91 @@ public class InventoryController {
     @FXML
     private TableColumn<Product, Double> priceColumn;
 
-    private ObservableList<Product> productList =
+    private final ObservableList<Product> productList =
             FXCollections.observableArrayList();
+
+    private Inventory inventory = new Inventory();
+
+    private int nextId = 1;
 
     @FXML
     public void initialize() {
 
         idColumn.setCellValueFactory(
-                new PropertyValueFactory<>("productId"));
+                new javafx.scene.control.cell.PropertyValueFactory<>("productId"));
 
         nameColumn.setCellValueFactory(
-                new PropertyValueFactory<>("name"));
+                new javafx.scene.control.cell.PropertyValueFactory<>("name"));
 
         quantityColumn.setCellValueFactory(
-                new PropertyValueFactory<>("quantity"));
+                new javafx.scene.control.cell.PropertyValueFactory<>("quantity"));
 
         priceColumn.setCellValueFactory(
-                new PropertyValueFactory<>("price"));
+                new javafx.scene.control.cell.PropertyValueFactory<>("price"));
 
         tableView.setItems(productList);
     }
 
+    // ==============================
+    // ADD PRODUCT (MULTIPLE SUPPORT)
+    // ==============================
     @FXML
-    private void handleAddProduct(ActionEvent event) {
-        Product newProduct =
-                new Product(1, "Sample Product", 9.99, 5);
+    private void handleAddProduct() {
 
-        productList.add(newProduct);
-    }
+        TextInputDialog nameDialog = new TextInputDialog();
+        nameDialog.setHeaderText("Enter Product Name:");
+        String name = nameDialog.showAndWait().orElse(null);
 
-    @FXML
-    private void handleRemoveProduct(ActionEvent event) {
-        Product selected =
-                tableView.getSelectionModel().getSelectedItem();
+        if (name == null || name.isBlank()) return;
 
-        if (selected != null) {
-            productList.remove(selected);
+        TextInputDialog qtyDialog = new TextInputDialog("1");
+        qtyDialog.setHeaderText("Enter Quantity:");
+        String qtyStr = qtyDialog.showAndWait().orElse(null);
+
+        if (qtyStr == null) return;
+
+        int qty = Integer.parseInt(qtyStr);
+
+        Product existing = inventory.searchByName(name);
+
+        if (existing != null) {
+            inventory.increaseQuantity(name, qty);
+            tableView.refresh();
+        } else {
+            Product product = new Product(nextId++, name, 10.0, qty);
+            inventory.addProduct(product);
+            productList.add(product);
         }
     }
 
+    // ==============================
+    // REMOVE QUANTITY
+    // ==============================
     @FXML
-    private void handleExit(ActionEvent event) {
+    private void handleRemoveProduct() {
+
+        Product selected = tableView.getSelectionModel().getSelectedItem();
+        if (selected == null) return;
+
+        TextInputDialog qtyDialog = new TextInputDialog("1");
+        qtyDialog.setHeaderText("Enter Quantity to Remove:");
+        String qtyStr = qtyDialog.showAndWait().orElse(null);
+
+        if (qtyStr == null) return;
+
+        int qty = Integer.parseInt(qtyStr);
+
+        inventory.decreaseQuantity(selected.getProductId(), qty);
+
+        if (selected.getQuantity() <= 0) {
+            productList.remove(selected);
+        }
+
+        tableView.refresh();
+    }
+
+    @FXML
+    private void handleExit() {
         System.exit(0);
     }
 }
