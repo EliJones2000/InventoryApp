@@ -1,17 +1,16 @@
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 import java.io.IOException;
 
 public class LoginController {
-    @FXML
-    private Button Login;
 
     @FXML
-    private TextField password;
+    private PasswordField password;
 
     @FXML
     private TextField username;
@@ -20,26 +19,28 @@ public class LoginController {
     private Label wrongLogin;
 
     @FXML
-    public void userLogin(ActionEvent event) throws IOException {
-        CheckLogin();
-
+    private void userLogin(ActionEvent event) throws IOException {
+        checkLogin();
     }
 
-    public void CheckLogin() throws IOException{
-        InventoryApp i = new InventoryApp();
-        if (username.getText().toString().equals("Username")&& password.getText().toString().equals("123")){
-            wrongLogin.setText("Login Successfull");
+    private void checkLogin() throws IOException {
 
-            i.changeScene("Inventory.fxml");
-        }
-        else if (username.getText().isEmpty() && password.getText().isEmpty()){
+        InventoryApp app = new InventoryApp();
+
+        if (username.getText().equals("Username")
+                && password.getText().equals("123")) {
+
+            wrongLogin.setText("Login Successful");
+
+            app.changeScene("Inventory.fxml");
+
+        } else if (username.getText().isEmpty()
+                || password.getText().isEmpty()) {
+
             wrongLogin.setText("Please enter your Username and Password");
 
-        }
-        else {
+        } else {
             wrongLogin.setText("Wrong username and Password");
         }
-
     }
-
 }

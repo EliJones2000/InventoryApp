@@ -7,6 +7,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="InventoryController">
 
+   <!-- TOP TITLE -->
    <top>
       <Label text="Inventory Management System"
              BorderPane.alignment="CENTER">
@@ -16,23 +17,36 @@
       </Label>
    </top>
 
+   <!-- TABLE CENTER -->
    <center>
       <TableView fx:id="tableView">
          <columns>
             <TableColumn fx:id="idColumn" text="ID"/>
             <TableColumn fx:id="nameColumn" text="Name"/>
+            <TableColumn fx:id="costColumn" text="Cost"/>
+            <TableColumn fx:id="sellColumn" text="Sell"/>
             <TableColumn fx:id="quantityColumn" text="Quantity"/>
-            <TableColumn fx:id="priceColumn" text="Price"/>
          </columns>
       </TableView>
    </center>
 
+   <!-- BOTTOM SECTION -->
    <bottom>
-      <HBox spacing="10" alignment="CENTER">
-         <Button text="Add Product" onAction="#handleAddProduct"/>
-         <Button text="Remove Product" onAction="#handleRemoveProduct"/>
-         <Button text="Exit" onAction="#handleExit"/>
-      </HBox>
+      <VBox spacing="10" alignment="CENTER">
+
+         <HBox spacing="10" alignment="CENTER">
+            <Button text="Add Product" onAction="#handleAddProduct"/>
+            <Button text="Sell Product" onAction="#handleSellProduct"/>
+            <Button text="Remove Product" onAction="#handleRemoveProduct"/>
+            <Button text="Exit" onAction="#handleExit"/>
+         </HBox>
+
+         <HBox spacing="20" alignment="CENTER">
+            <Label fx:id="revenueLabel" text="Revenue: $0"/>
+            <Label fx:id="profitLabel" text="Profit: $0"/>
+         </HBox>
+
+      </VBox>
    </bottom>
 
 </BorderPane>

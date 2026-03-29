@@ -2,13 +2,17 @@ public class Product {
 
     private int productId;
     private String name;
-    private double price;
+    private double costPrice;
+    private double sellPrice;
     private int quantity;
 
-    public Product(int productId, String name, double price, int quantity) {
+    public Product(int productId, String name,
+                   double costPrice, double sellPrice,
+                   int quantity) {
         this.productId = productId;
         this.name = name;
-        this.price = price;
+        this.costPrice = costPrice;
+        this.sellPrice = sellPrice;
         this.quantity = quantity;
     }
 
@@ -20,8 +24,12 @@ public class Product {
         return name;
     }
 
-    public double getPrice() {
-        return price;
+    public double getCostPrice() {
+        return costPrice;
+    }
+
+    public double getSellPrice() {
+        return sellPrice;
     }
 
     public int getQuantity() {
@@ -36,8 +44,13 @@ public class Product {
         return quantity < 5;
     }
 
+    public double getInventoryValue() {
+        return sellPrice * quantity;
+    }
+
     @Override
     public String toString() {
-        return productId + " - " + name + " - Qty: " + quantity;
+        return name + " | Qty: " + quantity +
+                " | Sell: $" + sellPrice;
     }
 }

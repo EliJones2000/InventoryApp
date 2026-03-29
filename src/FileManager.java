@@ -6,11 +6,11 @@ public class FileManager {
     public void saveInventory(Inventory inventory, String filename) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filename))) {
 
-            for (Product p : inventory.getAllProducts()) {
+            for (Product p : inventory.getProducts()) {
                 writer.println(
                         p.getProductId() + "," +
                                 p.getName() + "," +
-                                p.getPrice() + "," +
+                                p.getSellPrice() + "," +
                                 p.getQuantity()
                 );
             }
@@ -34,7 +34,7 @@ public class FileManager {
                 double price = Double.parseDouble(parts[2]);
                 int quantity = Integer.parseInt(parts[3]);
 
-                inventory.addProduct(new Product(id, name, price, quantity));
+                inventory.addProduct(new Product(id, name, price, price, quantity));
             }
 
         } catch (IOException e) {

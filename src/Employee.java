@@ -6,16 +6,9 @@ public class Employee extends User {
                     String username,
                     String passwordHash,
                     String email,
-                    String position) {
+                    UserRole role) {
 
-        // Automatically assign STAFF role for employees
-        super(userId,
-                username,
-                passwordHash,
-                email,
-                UserRole.STAFF);
-
-        this.position = position;
+        super(userId, username, passwordHash, email, role);
     }
 
     public String getPosition() {

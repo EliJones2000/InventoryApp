@@ -1,25 +1,21 @@
 import java.util.ArrayList;
-import java.util.List;
 
 public class Inventory {
 
-    private List<Product> products;
+    private ArrayList<Product> products;
+    private ArrayList<Sale> sales;
 
     public Inventory() {
         products = new ArrayList<>();
+        sales = new ArrayList<>();
     }
 
     public void addProduct(Product product) {
         products.add(product);
     }
-
-    public Product searchByName(String name) {
-        for (Product p : products) {
-            if (p.getName().equalsIgnoreCase(name)) {
-                return p;
-            }
-        }
-        return null;
+    public void clearAllProducts() {
+        products.clear();
+        sales.clear();
     }
 
     public Product searchById(int id) {
@@ -31,31 +27,51 @@ public class Inventory {
         return null;
     }
 
-    public void increaseQuantity(String name, int amount) {
-        Product product = searchByName(name);
-        if (product != null) {
-            product.setQuantity(product.getQuantity() + amount);
-        }
-    }
-
-    public void decreaseQuantity(int id, int amount) {
-        Product product = searchById(id);
-        if (product != null) {
-            int newQty = product.getQuantity() - amount;
-
-            if (newQty <= 0) {
-                products.remove(product);
-            } else {
-                product.setQuantity(newQty);
-            }
-        }
-    }
-
-    public List<Product> getAllProducts() {
+    public ArrayList<Product> getProducts() {
         return products;
     }
 
-    public void clearAllProducts() {
-        products.clear();
+    public ArrayList<Sale> getSales() {
+        return sales;
+    }
+
+    public boolean sellProduct(int productId, int qty) {
+
+        Product product = searchById(productId);
+
+        if (product == null) return false;
+
+        if (product.getQuantity() < qty) return false;
+
+        product.setQuantity(product.getQuantity() - qty);
+
+        Sale sale = new Sale(product, qty);
+        sales.add(sale);
+
+        return true;
+    }
+
+    public double getTotalInventoryValue() {
+        double total = 0;
+        for (Product p : products) {
+            total += p.getInventoryValue();
+        }
+        return total;
+    }
+
+    public double getTotalRevenue() {
+        double total = 0;
+        for (Sale s : sales) {
+            total += s.getTotalRevenue();
+        }
+        return total;
+    }
+
+    public double getTotalProfit() {
+        double total = 0;
+        for (Sale s : sales) {
+            total += s.getProfit();
+        }
+        return total;
     }
 }
