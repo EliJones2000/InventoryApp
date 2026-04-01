@@ -7,16 +7,23 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="InventoryController">
 
-   <!-- TOP TITLE -->
    <top>
-      <Label text="Inventory Management System"
-             BorderPane.alignment="CENTER">
-         <font>
-            <Font size="24"/>
-         </font>
-      </Label>
-   </top>
+      <VBox spacing="10" alignment="CENTER">
 
+         <!-- Title -->
+         <Label text="Inventory Management System">
+            <font>
+               <Font size="24"/>
+            </font>
+         </Label>
+
+         <!-- Search Field -->
+         <TextField fx:id="searchField"
+                    promptText="Search by ID or Name..."
+                    maxWidth="300"/>
+
+      </VBox>
+   </top>
    <!-- TABLE CENTER -->
    <center>
       <TableView fx:id="tableView">
