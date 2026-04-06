@@ -5,6 +5,10 @@ import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import java.util.Optional;
+import javafx.scene.control.Label;
 
 
 public class InventoryController {
@@ -23,6 +27,20 @@ public class InventoryController {
     @FXML private TextField searchField;
     @FXML private Label revenueLabel;
     @FXML private Label profitLabel;
+    @FXML
+    private Label inventoryValueLabel;
+    @FXML
+    private Label totalProductsLabel;
+    @FXML
+    private Label lowStockLabel;
+
+    private double calculateInventoryValue() {
+        double total = 0;
+        for (Product p : productList) {
+            total += p.getQuantity() * p.getCostPrice();
+        }
+        return total;
+    }
 
     // ==============================
     // DATA
@@ -77,7 +95,10 @@ public class InventoryController {
         sortedData.comparatorProperty().bind(tableView.comparatorProperty());
         tableView.setItems(sortedData);
         updateFinancialLabels();
+
+        checkLowStock();
     }
+
 
     // ==============================
     // PRELOAD PRODUCTS
@@ -111,6 +132,10 @@ public class InventoryController {
                 new Product(24, "Water Bottles (24-pack)", 3.50, 6.99, 20),
                 new Product(25, "Snack Chips", 1.50, 3.49, 26)
         );
+    }
+
+    private int getTotalProducts() {
+        return productList.size();
     }
 
     // ==============================
@@ -170,6 +195,22 @@ public class InventoryController {
         }
     }
 
+    @FXML
+    private void handleLowStock() {
+
+        filteredData.setPredicate(product ->
+                product.getQuantity() <= 5
+        );
+
+        checkLowStock();
+    }
+
+    @FXML
+    private void handleShowAll() {
+        filteredData.setPredicate(null);
+        lowStockLabel.setVisible(false);
+    }
+
     // ==============================
     // REMOVE PRODUCT
     // ==============================
@@ -178,13 +219,47 @@ public class InventoryController {
     private void handleRemoveProduct() {
 
         Product selected = tableView.getSelectionModel().getSelectedItem();
+
         if (selected == null) {
             showError("Select a product to remove.");
             return;
         }
 
-        productList.remove(selected);
-        updateFinancialLabels();
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle("Confirm Removal");
+        confirmAlert.setHeaderText("Are you sure you want to remove this product?");
+        confirmAlert.setContentText("Product: " + selected.getName());
+
+        Optional<ButtonType> result = confirmAlert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            productList.remove(selected);
+            updateFinancialLabels();
+        }
+    }
+    private void checkLowStock() {
+
+        StringBuilder lowItems = new StringBuilder();
+
+        for (Product product : productList) {
+            if (product.getQuantity() <= 5) {
+                lowItems.append(product.getName())
+                        .append(" (Qty: ")
+                        .append(product.getQuantity())
+                        .append(")  ");
+            }
+        }
+
+        if (lowItems.length() > 0) {
+            lowStockLabel.setText("⚠ Low Stock: " + lowItems.toString());
+            lowStockLabel.setVisible(true);
+        } else {
+            lowStockLabel.setVisible(false);
+        }
+    }
+    @FXML
+    private void handleClearSearch() {
+        searchField.clear();
     }
 
     // ==============================
@@ -203,6 +278,9 @@ public class InventoryController {
 
         revenueLabel.setText("Revenue: " + String.format("$%.2f", revenue));
         profitLabel.setText("Profit: " + String.format("$%.2f", profit));
+        inventoryValueLabel.setText("Inventory Value: $" +
+                String.format("%.2f", calculateInventoryValue()));
+        totalProductsLabel.setText("Total Products: " + getTotalProducts());
     }
 
     // ==============================

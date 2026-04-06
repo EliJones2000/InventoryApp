@@ -6,6 +6,7 @@ public class Product {
     private double sellPrice;
     private int quantity;
 
+
     public Product(int productId, String name,
                    double costPrice, double sellPrice,
                    int quantity) {
