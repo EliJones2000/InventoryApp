@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="SalesController">
+
+    <center>
+        <TableView fx:id="salesTable">
+
+            <columns>
+                <TableColumn fx:id="saleIdColumn" text="Sale ID" />
+                <TableColumn fx:id="productColumn" text="Product" />
+                <TableColumn fx:id="quantityColumn" text="Qty Sold" />
+                <TableColumn fx:id="totalColumn" text="Total $" />
+                <TableColumn fx:id="timestampColumn" text="Date/Time" />
+            </columns>
+
+        </TableView>
+    </center>
+
+</BorderPane>

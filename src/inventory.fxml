@@ -43,11 +43,13 @@
 
          <HBox spacing="10" alignment="CENTER">
             <Button text="Add Product" onAction="#handleAddProduct"/>
-            <Button text="Sell Product" onAction="#handleSellProduct"/>
             <Button text="Remove Product" onAction="#handleRemoveProduct"/>
             <Button text="Show Low Stock" onAction="#handleLowStock"/>
+            <Button text="Restock Product" onAction="#handleRestockProduct"/>
             <Button text="Show All" onAction="#handleShowAll"/>
             <Button text="Clear" onAction="#handleClearSearch"/>
+            <Button text="Sell Product" onAction="#handleSellProduct"/>
+            <Button text="View Sales History" onAction="#handleViewSales"/>
             <Button text="Exit" onAction="#handleExit"/>
          </HBox>
 

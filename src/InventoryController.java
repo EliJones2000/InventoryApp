@@ -1,3 +1,6 @@
+// ==============================
+// IMPORTS
+// ==============================
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -5,17 +8,18 @@ import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
+
+import java.io.*;
 import java.util.Optional;
-import javafx.scene.control.Label;
 
-
+// ==============================
+// CLASS
+// ==============================
 public class InventoryController {
 
-    // ==============================
-    // FXML ELEMENTS
-    // ==============================
+    private static final String FILE_NAME = "inventory.txt";
+    private static final String SALES_FILE = "sales.txt";
+    private int nextSaleId = 1;
 
     @FXML private TableView<Product> tableView;
     @FXML private TableColumn<Product, Integer> idColumn;
@@ -27,28 +31,13 @@ public class InventoryController {
     @FXML private TextField searchField;
     @FXML private Label revenueLabel;
     @FXML private Label profitLabel;
-    @FXML
-    private Label inventoryValueLabel;
-    @FXML
-    private Label totalProductsLabel;
-    @FXML
-    private Label lowStockLabel;
-
-    private double calculateInventoryValue() {
-        double total = 0;
-        for (Product p : productList) {
-            total += p.getQuantity() * p.getCostPrice();
-        }
-        return total;
-    }
-
-    // ==============================
-    // DATA
-    // ==============================
+    @FXML private Label inventoryValueLabel;
+    @FXML private Label totalProductsLabel;
+    @FXML private Label lowStockLabel;
 
     private ObservableList<Product> productList = FXCollections.observableArrayList();
     private FilteredList<Product> filteredData;
-    private int nextId = 26; // since we preload 25 items
+    private int nextId = 1;
 
     // ==============================
     // INITIALIZE
@@ -63,79 +52,103 @@ public class InventoryController {
         sellColumn.setCellValueFactory(new PropertyValueFactory<>("sellPrice"));
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
 
-        loadDefaultProducts();
+        loadFromFile();
 
         filteredData = new FilteredList<>(productList, p -> true);
 
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> {
             filteredData.setPredicate(product -> {
 
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
+                if (newVal == null || newVal.isEmpty()) return true;
 
-                String lowerCaseFilter = newValue.toLowerCase();
+                String filter = newVal.toLowerCase();
 
-                // Search by Name
-                if (product.getName().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-
-                // Search by ID
-                if (String.valueOf(product.getProductId()).contains(lowerCaseFilter)) {
-                    return true;
-                }
-
-                return false;
+                return product.getName().toLowerCase().contains(filter) ||
+                        String.valueOf(product.getProductId()).contains(filter);
             });
         });
 
         SortedList<Product> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(tableView.comparatorProperty());
         tableView.setItems(sortedData);
+
         updateFinancialLabels();
-
         checkLowStock();
+
+        tableView.setRowFactory(tv -> new TableRow<Product>() {
+            @Override
+            protected void updateItem(Product product, boolean empty) {
+                super.updateItem(product, empty);
+
+                if (product == null || empty) {
+                    setStyle("");
+                } else if (product.getQuantity() <= 5) {
+                    setStyle("-fx-background-color: #ffdddd;");
+                } else {
+                    setStyle("");
+                }
+            }
+        });
     }
 
-
     // ==============================
-    // PRELOAD PRODUCTS
+    // FILE SAVE
     // ==============================
 
-    private void loadDefaultProducts() {
-        productList.addAll(
-                new Product(1, "Milk", 1.50, 2.99, 12),
-                new Product(2, "Bread", 1.00, 2.49, 15),
-                new Product(3, "Eggs", 2.00, 3.99, 8),
-                new Product(4, "Apples", 0.50, 1.25, 25),
-                new Product(5, "Bananas", 0.30, 0.99, 30),
-                new Product(6, "Orange Juice", 2.50, 4.49, 10),
-                new Product(7, "Chicken Breast", 4.00, 7.99, 18),
-                new Product(8, "Ground Beef", 3.50, 6.99, 14),
-                new Product(9, "Rice (5lb)", 3.00, 5.49, 20),
-                new Product(10, "Pasta", 1.20, 2.79, 22),
-                new Product(11, "Cereal", 2.75, 4.99, 16),
-                new Product(12, "Yogurt", 0.75, 1.49, 35),
-                new Product(13, "Cheese", 2.50, 4.25, 11),
-                new Product(14, "Butter", 1.80, 3.49, 9),
-                new Product(15, "Tomatoes", 0.60, 1.79, 28),
-                new Product(16, "Lettuce", 0.90, 1.99, 13),
-                new Product(17, "Potatoes (10lb)", 4.00, 6.99, 7),
-                new Product(18, "Onions", 0.40, 1.29, 19),
-                new Product(19, "Coffee", 5.00, 8.99, 6),
-                new Product(20, "Tea Bags", 2.20, 3.99, 17),
-                new Product(21, "Frozen Pizza", 3.50, 6.49, 12),
-                new Product(22, "Ice Cream", 2.75, 5.99, 8),
-                new Product(23, "Soda (12-pack)", 4.00, 7.49, 14),
-                new Product(24, "Water Bottles (24-pack)", 3.50, 6.99, 20),
-                new Product(25, "Snack Chips", 1.50, 3.49, 26)
-        );
+    private void saveToFile() {
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME))) {
+
+            for (Product p : productList) {
+                writer.write(p.getProductId() + "," +
+                        p.getName() + "," +
+                        p.getCostPrice() + "," +
+                        p.getSellPrice() + "," +
+                        p.getQuantity());
+                writer.newLine();
+            }
+
+        } catch (IOException e) {
+            showError("Error saving file.");
+        }
     }
 
-    private int getTotalProducts() {
-        return productList.size();
+    // ==============================
+    // FILE LOAD
+    // ==============================
+
+    private void loadFromFile() {
+
+        File file = new File(FILE_NAME);
+        if (!file.exists()) return;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
+
+            String line;
+            int highestId = 0;
+
+            while ((line = reader.readLine()) != null) {
+
+                String[] parts = line.split(",");
+
+                int id = Integer.parseInt(parts[0]);
+                String name = parts[1];
+                double cost = Double.parseDouble(parts[2]);
+                double sell = Double.parseDouble(parts[3]);
+                int qty = Integer.parseInt(parts[4]);
+
+                productList.add(new Product(id, name, cost, sell, qty));
+
+                if (id > highestId) {
+                    highestId = id;
+                }
+            }
+
+            nextId = highestId + 1;
+
+        } catch (IOException e) {
+            showError("Error loading file.");
+        }
     }
 
     // ==============================
@@ -145,9 +158,7 @@ public class InventoryController {
     @FXML
     private void handleAddProduct() {
 
-        TextInputDialog nameDialog = new TextInputDialog();
-        nameDialog.setHeaderText("Enter Product Name:");
-        String name = nameDialog.showAndWait().orElse(null);
+        String name = showInput("Enter Product Name:");
         if (name == null) return;
 
         try {
@@ -159,56 +170,11 @@ public class InventoryController {
             productList.add(newProduct);
 
             updateFinancialLabels();
+            saveToFile();
 
         } catch (Exception e) {
             showError("Invalid input.");
         }
-    }
-
-    // ==============================
-    // SELL PRODUCT
-    // ==============================
-
-    @FXML
-    private void handleSellProduct() {
-
-        Product selected = tableView.getSelectionModel().getSelectedItem();
-        if (selected == null) {
-            showError("Select a product first.");
-            return;
-        }
-
-        try {
-            int qty = Integer.parseInt(showInput("Enter Quantity To Sell:"));
-
-            if (qty <= 0 || qty > selected.getQuantity()) {
-                showError("Invalid quantity.");
-                return;
-            }
-
-            selected.setQuantity(selected.getQuantity() - qty);
-            tableView.refresh();
-            updateFinancialLabels();
-
-        } catch (Exception e) {
-            showError("Invalid quantity.");
-        }
-    }
-
-    @FXML
-    private void handleLowStock() {
-
-        filteredData.setPredicate(product ->
-                product.getQuantity() <= 5
-        );
-
-        checkLowStock();
-    }
-
-    @FXML
-    private void handleShowAll() {
-        filteredData.setPredicate(null);
-        lowStockLabel.setVisible(false);
     }
 
     // ==============================
@@ -219,24 +185,76 @@ public class InventoryController {
     private void handleRemoveProduct() {
 
         Product selected = tableView.getSelectionModel().getSelectedItem();
-
         if (selected == null) {
             showError("Select a product to remove.");
             return;
         }
 
-        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmAlert.setTitle("Confirm Removal");
-        confirmAlert.setHeaderText("Are you sure you want to remove this product?");
-        confirmAlert.setContentText("Product: " + selected.getName());
+        productList.remove(selected);
+        updateFinancialLabels();
+        saveToFile();
+    }
 
-        Optional<ButtonType> result = confirmAlert.showAndWait();
+    // ==============================
+    // RESTOCK
+    // ==============================
 
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            productList.remove(selected);
+    @FXML
+    private void handleRestockProduct() {
+
+        Product selected = tableView.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showError("Select a product first.");
+            return;
+        }
+
+        try {
+            int amount = Integer.parseInt(showInput("Enter quantity to add:"));
+
+            if (amount <= 0) {
+                showError("Invalid quantity.");
+                return;
+            }
+
+            selected.setQuantity(selected.getQuantity() + amount);
+
+            tableView.refresh();
             updateFinancialLabels();
+            checkLowStock();
+            saveToFile();
+
+        } catch (Exception e) {
+            showError("Invalid input.");
         }
     }
+
+    // ==============================
+    // FILTER METHODS (FIXED)
+    // ==============================
+
+    @FXML
+    private void handleLowStock() {
+        filteredData.setPredicate(product ->
+                product.getQuantity() <= 5
+        );
+        checkLowStock();
+    }
+
+    @FXML
+    private void handleShowAll() {
+        filteredData.setPredicate(p -> true);
+        lowStockLabel.setVisible(false);
+    }
+
+    @FXML
+    private void handleClearSearch() {
+        searchField.clear();
+    }
+
+    // ==============================
+    // LOW STOCK LABEL
+    // ==============================
+
     private void checkLowStock() {
 
         StringBuilder lowItems = new StringBuilder();
@@ -251,15 +269,85 @@ public class InventoryController {
         }
 
         if (lowItems.length() > 0) {
-            lowStockLabel.setText("⚠ Low Stock: " + lowItems.toString());
+            lowStockLabel.setText("⚠ Low Stock: " + lowItems);
             lowStockLabel.setVisible(true);
         } else {
             lowStockLabel.setVisible(false);
         }
     }
+
+
     @FXML
-    private void handleClearSearch() {
-        searchField.clear();
+    private void handleSellProduct() {
+
+        Product selected = tableView.getSelectionModel().getSelectedItem();
+
+        if (selected == null) {
+            showError("Select a product to sell.");
+            return;
+        }
+
+        try {
+            int amount = Integer.parseInt(showInput("Enter quantity to sell:"));
+
+            if (amount <= 0 || amount > selected.getQuantity()) {
+                showError("Invalid quantity.");
+                return;
+            }
+
+            selected.setQuantity(selected.getQuantity() - amount);
+
+            double total = selected.getSellPrice() * amount;
+
+            saveSale(selected, amount, total);
+
+            tableView.refresh();
+            updateFinancialLabels();
+            saveToFile();
+
+        } catch (Exception e) {
+            showError("Invalid input.");
+        }
+    }
+    private void saveSale(Product product, int qty, double total) {
+
+        try (BufferedWriter writer =
+                     new BufferedWriter(new FileWriter(SALES_FILE, true))) {
+
+            String timestamp = java.time.LocalDateTime.now().toString();
+
+            writer.write(nextSaleId++ + "," +
+                    product.getProductId() + "," +
+                    product.getName() + "," +
+                    qty + "," +
+                    product.getSellPrice() + "," +
+                    total + "," +
+                    timestamp);
+
+            writer.newLine();
+
+        } catch (IOException e) {
+            showError("Error saving sale.");
+        }
+    }
+    @FXML
+    private void handleViewSales() {
+
+        try {
+            javafx.fxml.FXMLLoader loader =
+                    new javafx.fxml.FXMLLoader(
+                            getClass().getResource("sales.fxml"));
+
+            javafx.scene.Parent root = loader.load();
+
+            javafx.stage.Stage stage =
+                    (javafx.stage.Stage) tableView.getScene().getWindow();
+
+            stage.setScene(new javafx.scene.Scene(root));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // ==============================
@@ -270,22 +358,19 @@ public class InventoryController {
 
         double revenue = 0;
         double profit = 0;
+        double inventoryValue = 0;
 
         for (Product p : productList) {
             revenue += p.getSellPrice() * p.getQuantity();
             profit += (p.getSellPrice() - p.getCostPrice()) * p.getQuantity();
+            inventoryValue += p.getCostPrice() * p.getQuantity();
         }
 
-        revenueLabel.setText("Revenue: " + String.format("$%.2f", revenue));
-        profitLabel.setText("Profit: " + String.format("$%.2f", profit));
-        inventoryValueLabel.setText("Inventory Value: $" +
-                String.format("%.2f", calculateInventoryValue()));
-        totalProductsLabel.setText("Total Products: " + getTotalProducts());
+        revenueLabel.setText("Revenue: $" + String.format("%.2f", revenue));
+        profitLabel.setText("Profit: $" + String.format("%.2f", profit));
+        inventoryValueLabel.setText("Inventory Value: $" + String.format("%.2f", inventoryValue));
+        totalProductsLabel.setText("Total Products: " + productList.size());
     }
-
-    // ==============================
-    // HELPERS
-    // ==============================
 
     private String showInput(String message) {
         TextInputDialog dialog = new TextInputDialog();
