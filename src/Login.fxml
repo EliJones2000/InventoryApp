@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0"
-            xmlns="http://javafx.com/javafx/23"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="LoginController">
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="LoginController">
 
    <!-- LEFT SIDE -->
    <left>
       <AnchorPane prefHeight="400.0" prefWidth="200.0">
          <children>
-            <Label layoutX="12.0" layoutY="73.0"
-                   text="Inventory">
+            <Label layoutX="12.0" layoutY="73.0" text="Inventory">
                <font>
-                  <Font size="30.0"/>
+                  <Font size="30.0" />
                </font>
             </Label>
 
-            <Label layoutX="28.0" layoutY="178.0"
-                   text="Management">
+            <Label layoutX="28.0" layoutY="178.0" text="Management">
                <font>
-                  <Font size="30.0"/>
+                  <Font size="30.0" />
                </font>
             </Label>
          </children>
@@ -35,38 +34,24 @@
       <AnchorPane prefHeight="400.0" prefWidth="400.0">
          <children>
 
-            <Label layoutX="120.0" layoutY="40.0"
-                   text="Welcome">
+            <Label layoutX="120.0" layoutY="40.0" text="Welcome">
                <font>
-                  <Font size="36.0"/>
+                  <Font size="36.0" />
                </font>
             </Label>
 
-            <Label layoutX="50.0" layoutY="140.0"
-                   text="Username:"/>
+            <Label layoutX="50.0" layoutY="140.0" text="Username:" />
 
-            <TextField fx:id="username"
-                       layoutX="150.0"
-                       layoutY="135.0"
-                       prefWidth="180.0"/>
+            <TextField fx:id="username" layoutX="150.0" layoutY="135.0" prefWidth="180.0" />
 
-            <Label layoutX="50.0" layoutY="200.0"
-                   text="Password:"/>
+            <Label layoutX="50.0" layoutY="200.0" text="Password:" />
 
-            <PasswordField fx:id="password"
-                           layoutX="150.0"
-                           layoutY="195.0"
-                           prefWidth="180.0"/>
+            <PasswordField fx:id="password" layoutX="150.0" layoutY="195.0" prefWidth="180.0" />
 
-            <Button text="Login"
-                    layoutX="200.0"
-                    layoutY="260.0"
-                    onAction="#userLogin"/>
+            <Button defaultButton="true" layoutX="200.0" layoutY="260.0" onAction="#userLogin" text="Login" />
 
-            <Label fx:id="wrongLogin"
-                   layoutX="120.0"
-                   layoutY="300.0"
-                   textFill="RED"/>
+            <Label fx:id="wrongLogin" layoutX="120.0" layoutY="300.0" textFill="RED" />
+            <Button layoutX="278.0" layoutY="260.0" mnemonicParsing="false" onAction="#createaccount" text="Signup" />
 
          </children>
       </AnchorPane>
