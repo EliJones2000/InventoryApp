@@ -1,4 +1,3 @@
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,65 +9,88 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-import java.io.IOException;
+import java.io.*;
+import java.util.Scanner;
 
 public class LoginController {
 
     @FXML
-    private PasswordField password;
+    private TextField username;
 
     @FXML
-    private TextField username;
+    private PasswordField password;
 
     @FXML
     private Label wrongLogin;
 
     @FXML
     private void userLogin(ActionEvent event) throws IOException {
-        checkLogin();
+        checkLogin(event);
     }
 
-    //checks username and password
-    private void checkLogin() throws IOException {
+    private void checkLogin(ActionEvent event) throws IOException {
 
-        InventoryApp app = new InventoryApp();
+        if (username.getText().isEmpty() || password.getText().isEmpty()) {
+            wrongLogin.setText("Please enter your Username and Password");
+            return;
+        }
 
-        if (username.getText().equals(signUpController.strg) && password.getText().equals(signUpController.strg)) {
+        File file = new File("users.txt");
 
+        if (!file.exists()) {
+            wrongLogin.setText("No users found. Please sign up.");
+            return;
+        }
+
+        Scanner scanner = new Scanner(file);
+
+        boolean found = false;
+
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            String[] parts = line.split(",");
+
+            if (parts.length == 2) {
+                String fileUser = parts[0];
+                String filePass = parts[1];
+
+                if (username.getText().equals(fileUser)
+                        && password.getText().equals(filePass)) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        scanner.close();
+
+        if (found) {
             wrongLogin.setText("Login Successful");
 
-            app.changeScene("Inventory.fxml");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Inventory.fxml"));
+            Parent root = loader.load();
 
-        } else if (username.getText().isEmpty()
-                || password.getText().isEmpty()) {
-
-            wrongLogin.setText("Please enter your Username and Password");
+            Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
 
         } else {
-            wrongLogin.setText("Wrong username and Password");
+            wrongLogin.setText("Wrong username or password");
         }
     }
 
-
-    //change to sign up
     @FXML
     public void createaccount(ActionEvent event) {
-
-        try{
-            FXMLLoader loginLoad = new FXMLLoader(getClass().getResource("signup.fxml"));
-            Parent loginRoot = loginLoad.load();
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("signup.fxml"));
+            Parent root = loader.load();
 
             Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
-
-            Scene scene = new Scene(loginRoot);
-
-            stage.setScene(scene);
-            stage.setTitle("Inventory Management System");
+            stage.setScene(new Scene(root));
             stage.show();
-        }catch (IOException ev){
-            ev.printStackTrace();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-
     }
 }

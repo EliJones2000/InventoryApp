@@ -43,13 +43,8 @@
 
          <HBox spacing="10" alignment="CENTER">
             <Button text="Add Product" onAction="#handleAddProduct"/>
-            <Button text="Remove Product" onAction="#handleRemoveProduct"/>
-            <Button text="Show Low Stock" onAction="#handleLowStock"/>
-            <Button text="Restock Product" onAction="#handleRestockProduct"/>
-            <Button text="Show All" onAction="#handleShowAll"/>
-            <Button text="Clear" onAction="#handleClearSearch"/>
             <Button text="Sell Product" onAction="#handleSellProduct"/>
-            <Button text="View Sales History" onAction="#handleViewSales"/>
+            <Button text="Remove Product" onAction="#handleRemoveProduct"/>
             <Button text="Exit" onAction="#handleExit"/>
          </HBox>
 
@@ -58,14 +53,13 @@
             <Label fx:id="profitLabel" text="Profit: $0"/>
             <Label fx:id="inventoryValueLabel" text="Inventory Value: $0"/>
             <Label fx:id="totalProductsLabel" text="Total Products: 0"/>
-
-            <Label fx:id="lowStockLabel"
-                   text=""
-                   style="-fx-text-fill: red; -fx-font-weight: bold;"
-                   visible="false"/>
          </HBox>
+
+         <Label fx:id="lowStockLabel"
+                text=""
+                textFill="red"
+                visible="false"/>
 
       </VBox>
    </bottom>
-
 </BorderPane>

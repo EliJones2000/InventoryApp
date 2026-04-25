@@ -4,22 +4,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class signUpController {
-    @FXML
-    private Button createAccount;
-
-    @FXML
-    private Button returnLogin;
 
     @FXML
     private Label error;
@@ -36,8 +29,6 @@ public class signUpController {
     @FXML
     private TextField createUsername;
 
-    static List<Object> strg = new ArrayList<>();
-
     @FXML
     void signUpComplete(ActionEvent event) {
 
@@ -45,61 +36,52 @@ public class signUpController {
         String username = createUsername.getText();
         String password = createPassword.getText();
         String reEnter = confirmPassword.getText();
-        int userid = 10000;
 
-
-        if(email.isEmpty() || username.isEmpty() || password.isEmpty() || reEnter.isEmpty() || !password.equals(reEnter)){
-            error.setText("Please fill all fields and make sure the password match");
+        if (email.isEmpty() || username.isEmpty() || password.isEmpty() || reEnter.isEmpty()) {
+            error.setText("Please fill all fields");
             return;
         }
-        else {
 
-            userid = userid+1;
-
-            User newuser = new User (userid,username, email, password, User.UserRole.STAFF);
-
-            storeUserData(newuser);
-
-            error.setText("registration succesful"+ email);
-
-            //returns to login
-
-            try{
-                FXMLLoader loginLoad = new FXMLLoader(getClass().getResource("Login.fxml"));
-                Parent loginRoot = loginLoad.load();
-
-                Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
-
-                Scene scene = new Scene(loginRoot);
-
-                stage.setScene(scene);
-                stage.setTitle("Inventory Management System");
-                stage.show();
-            }catch (IOException ev){
-                ev.printStackTrace();
-            }
+        if (!password.equals(reEnter)) {
+            error.setText("Passwords do not match");
+            return;
         }
-    }
 
-    private void storeUserData(User newuser){
-        strg.add(newuser);
+        try {
+            // Append to users.txt
+            FileWriter writer = new FileWriter("users.txt", true);
+            writer.write(username + "," + password + "\n");
+            writer.close();
+
+            error.setText("Registration successful!");
+
+            // Return to Login screen
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Inventory Management System");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            error.setText("Error saving user.");
+        }
     }
 
     @FXML
-    public void ReturneeLogin(ActionEvent e) {
-        try{
-            FXMLLoader loginLoad = new FXMLLoader(getClass().getResource("Login.fxml"));
-            Parent loginRoot = loginLoad.load();
+    public void ReturneeLogin(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+            Parent root = loader.load();
 
-            Stage stage = (Stage)((Node) e.getSource()).getScene().getWindow();
-
-            Scene scene = new Scene(loginRoot);
-
-            stage.setScene(scene);
-            stage.setTitle("Inventory Management System");
+            Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
             stage.show();
-        }catch (IOException ev){
-            ev.printStackTrace();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
