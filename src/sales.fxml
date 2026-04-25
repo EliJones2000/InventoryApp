@@ -3,21 +3,27 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
             fx:controller="SalesController">
 
     <center>
         <TableView fx:id="salesTable">
-
             <columns>
-                <TableColumn fx:id="saleIdColumn" text="Sale ID" />
-                <TableColumn fx:id="productColumn" text="Product" />
-                <TableColumn fx:id="quantityColumn" text="Qty Sold" />
-                <TableColumn fx:id="totalColumn" text="Total $" />
-                <TableColumn fx:id="timestampColumn" text="Date/Time" />
+                <TableColumn fx:id="saleIdColumn" text="Sale ID"/>
+                <TableColumn fx:id="productColumn" text="Product"/>
+                <TableColumn fx:id="quantityColumn" text="Qty Sold"/>
+                <TableColumn fx:id="totalColumn" text="Total $"/>
+                <TableColumn fx:id="timestampColumn" text="Date/Time"/>
             </columns>
-
         </TableView>
     </center>
+
+    <bottom>
+        <HBox alignment="CENTER" spacing="10" style="-fx-padding: 10;">
+            <Button text="Back to Inventory"
+                    onAction="#handleBackToInventory"/>
+        </HBox>
+    </bottom>
 
 </BorderPane>

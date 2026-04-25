@@ -40,6 +40,26 @@ public class SalesController {
         salesTable.setItems(salesList);
     }
 
+    @FXML
+    private void handleBackToInventory() {
+
+        try {
+            javafx.fxml.FXMLLoader loader =
+                    new javafx.fxml.FXMLLoader(
+                            getClass().getResource("inventory.fxml"));
+
+            javafx.scene.Parent root = loader.load();
+
+            javafx.stage.Stage stage =
+                    (javafx.stage.Stage) salesTable.getScene().getWindow();
+
+            stage.setScene(new javafx.scene.Scene(root));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void loadSales() {
 
         try (BufferedReader reader =

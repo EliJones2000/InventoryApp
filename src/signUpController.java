@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -14,6 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class signUpController {
+    @FXML
+    private Button createAccount;
+
+    @FXML
+    private Button returnLogin;
+
     @FXML
     private Label error;
 
@@ -43,7 +50,7 @@ public class signUpController {
 
         if(email.isEmpty() || username.isEmpty() || password.isEmpty() || reEnter.isEmpty() || !password.equals(reEnter)){
             error.setText("Please fill all fields and make sure the password match");
-
+            return;
         }
         else {
 
@@ -53,9 +60,9 @@ public class signUpController {
 
             storeUserData(newuser);
 
-            error.setText("registration successful"+ email);
+            error.setText("registration succesful"+ email);
 
-            //returns to Log-in
+            //returns to login
 
             try{
                 FXMLLoader loginLoad = new FXMLLoader(getClass().getResource("Login.fxml"));
