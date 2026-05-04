@@ -1,8 +1,12 @@
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -19,6 +23,7 @@ public class SalesController {
     @FXML private TableColumn<Sale, Double> totalColumn;
     @FXML private TableColumn<Sale, String> timestampColumn;
 
+
     private ObservableList<Sale> salesList =
             FXCollections.observableArrayList();
 
@@ -33,6 +38,18 @@ public class SalesController {
                 new PropertyValueFactory<>("quantitySold"));
         totalColumn.setCellValueFactory(
                 new PropertyValueFactory<>("totalAmount"));
+        totalColumn.setCellFactory(column -> new TableCell<Sale, Double>() {
+            @Override
+            protected void updateItem(Double value, boolean empty) {
+                super.updateItem(value, empty);
+
+                if (empty || value == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("%.2f", value));
+                }
+            }
+        });
         timestampColumn.setCellValueFactory(
                 new PropertyValueFactory<>("timestamp"));
 
@@ -40,20 +57,22 @@ public class SalesController {
         salesTable.setItems(salesList);
     }
 
+
+    // ===============================
+    // BACK TO INVENTORY
+    // ===============================
     @FXML
     private void handleBackToInventory() {
-
         try {
-            javafx.fxml.FXMLLoader loader =
-                    new javafx.fxml.FXMLLoader(
-                            getClass().getResource("inventory.fxml"));
+            FXMLLoader loader =
+                    new FXMLLoader(getClass().getResource("inventory.fxml"));
+            Parent root = loader.load();
 
-            javafx.scene.Parent root = loader.load();
+            Stage stage =
+                    (Stage) salesTable.getScene().getWindow();
 
-            javafx.stage.Stage stage =
-                    (javafx.stage.Stage) salesTable.getScene().getWindow();
-
-            stage.setScene(new javafx.scene.Scene(root));
+            stage.setScene(new Scene(root));
+            stage.setTitle("Inventory Management");
 
         } catch (Exception e) {
             e.printStackTrace();

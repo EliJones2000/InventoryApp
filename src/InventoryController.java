@@ -8,9 +8,15 @@ import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.scene.Node;
+import javafx.event.ActionEvent;
+import java.io.IOException;
 
 import java.io.*;
-import java.util.Optional;
 
 // ==============================
 // CLASS
@@ -38,6 +44,26 @@ public class InventoryController {
     private ObservableList<Product> productList = FXCollections.observableArrayList();
     private FilteredList<Product> filteredData;
     private int nextId = 1;
+
+    // =================================
+// NAVIGATION METHODS
+// =================================
+
+    @FXML
+    private void goToSales(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("sales.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Sales Management");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     // ==============================
     // INITIALIZE

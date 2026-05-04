@@ -7,6 +7,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="InventoryController">
 
+   <!-- TOP SECTION -->
    <top>
       <VBox spacing="10" alignment="CENTER">
 
@@ -22,8 +23,14 @@
                     promptText="Search by ID or Name..."
                     maxWidth="300"/>
 
+         <!-- NEW: Navigation Button -->
+         <Button text="Go To Sales"
+                 onAction="#goToSales"
+                 maxWidth="150"/>
+
       </VBox>
    </top>
+
    <!-- TABLE CENTER -->
    <center>
       <TableView fx:id="tableView">
@@ -41,6 +48,7 @@
    <bottom>
       <VBox spacing="10" alignment="CENTER">
 
+         <!-- Action Buttons -->
          <HBox spacing="10" alignment="CENTER">
             <Button text="Add Product" onAction="#handleAddProduct"/>
             <Button text="Sell Product" onAction="#handleSellProduct"/>
@@ -48,6 +56,7 @@
             <Button text="Exit" onAction="#handleExit"/>
          </HBox>
 
+         <!-- Stats Section -->
          <HBox spacing="20" alignment="CENTER">
             <Label fx:id="revenueLabel" text="Revenue: $0"/>
             <Label fx:id="profitLabel" text="Profit: $0"/>
@@ -55,6 +64,7 @@
             <Label fx:id="totalProductsLabel" text="Total Products: 0"/>
          </HBox>
 
+         <!-- Low Stock Warning -->
          <Label fx:id="lowStockLabel"
                 text=""
                 textFill="red"
@@ -62,4 +72,5 @@
 
       </VBox>
    </bottom>
+
 </BorderPane>
