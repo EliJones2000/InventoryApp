@@ -32,20 +32,20 @@ public class LoginController {
         if (checkLogin(user, pass)) {
             wrongLogin.setText("Login Successful!");
             // Proceed to next screen
+
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("inventory.fxml"));
+                Parent root = loader.load();
+
+                Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
+                stage.setScene(new Scene(root));
+                stage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         } else {
             wrongLogin.setText("Invalid credentials.");
-        }
-
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("inventory.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
 
     }
@@ -55,7 +55,7 @@ public class LoginController {
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                String[] parts = line.split(","); // Split by the coma
+                String[] parts = line.split(","); // Split by separator
                 if (parts.length == 2) {
                     if (parts[0].equals(username) && parts[1].equals(password)) {
                         return true;
