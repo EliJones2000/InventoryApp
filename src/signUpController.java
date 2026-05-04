@@ -4,7 +4,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -12,14 +11,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.Random;
 
 public class signUpController {
-    @FXML
-    private Button createAccount;
-
-    @FXML
-    private Button returnLogin;
 
     @FXML
     private Label error;
@@ -45,22 +43,25 @@ public class signUpController {
         String username = createUsername.getText();
         String password = createPassword.getText();
         String reEnter = confirmPassword.getText();
-        int userid = 10000;
+        Random rand = new Random();
+        int randomnum = rand.nextInt(1,500);
 
+        int userid = 1000000;
 
         if(email.isEmpty() || username.isEmpty() || password.isEmpty() || reEnter.isEmpty() || !password.equals(reEnter)){
             error.setText("Please fill all fields and make sure the password match");
-            return;
         }
         else {
 
-            userid = userid+1;
+            int newid = userid + randomnum;
 
-            User newuser = new User (userid,username, email, password, User.UserRole.STAFF);
+            User newuser = new User (username, password, email, User.UserRole.STAFF, newid);
+
+            strg = Collections.singletonList(newuser);
 
             storeUserData(newuser);
 
-            error.setText("registration succesful"+ email);
+            error.setText("registration successful"+ email);
 
             //returns to login
 
@@ -82,7 +83,13 @@ public class signUpController {
     }
 
     private void storeUserData(User newuser){
-        strg.add(newuser);
+        String data = strg.toString();
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("users.txt", true))) {
+            writer.write(data);
+            writer.newLine(); // Adds a system-dependent newline character
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

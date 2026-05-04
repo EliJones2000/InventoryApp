@@ -23,62 +23,50 @@ public class LoginController {
     @FXML
     private Label wrongLogin;
 
+
     @FXML
     private void userLogin(ActionEvent event) throws IOException {
-        checkLogin(event);
-    }
+        String user = username.getText();
+        String pass = password.getText();
 
-    private void checkLogin(ActionEvent event) throws IOException {
-
-        if (username.getText().isEmpty() || password.getText().isEmpty()) {
-            wrongLogin.setText("Please enter your Username and Password");
-            return;
+        if (checkLogin(user, pass)) {
+            wrongLogin.setText("Login Successful!");
+            // Proceed to next screen
+        } else {
+            wrongLogin.setText("Invalid credentials.");
         }
 
-        File file = new File("users.txt");
-
-        if (!file.exists()) {
-            wrongLogin.setText("No users found. Please sign up.");
-            return;
-        }
-
-        Scanner scanner = new Scanner(file);
-
-        boolean found = false;
-
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            String[] parts = line.split(",");
-
-            if (parts.length == 2) {
-                String fileUser = parts[0];
-                String filePass = parts[1];
-
-                if (username.getText().equals(fileUser)
-                        && password.getText().equals(filePass)) {
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        scanner.close();
-
-        if (found) {
-            wrongLogin.setText("Login Successful");
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("Inventory.fxml"));
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("inventory.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage)((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
 
-        } else {
-            wrongLogin.setText("Wrong username or password");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
     }
 
+    private boolean checkLogin(String username, String password) {
+        File file = new File("users.txt");
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] parts = line.split(","); // Split by the coma
+                if (parts.length == 2) {
+                    if (parts[0].equals(username) && parts[1].equals(password)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            wrongLogin.setText("Error: users.txt not found.");
+        }
+        return false;
+    }
     @FXML
     public void createaccount(ActionEvent event) {
         try {

@@ -1,7 +1,7 @@
 public class User {
     protected int userId;
     protected String username;
-    protected String passwordHash; // Use secure password handling, not plain text
+    protected String passwordHash; // Use secure password handling
     protected String email;
     protected UserRole role; // Using an Enum for roles (e.g., ADMIN, MANAGER)
 
@@ -13,10 +13,10 @@ public class User {
     }
 
     // Constructor
-    public User(int userId, String username, String passwordHash, String email, UserRole role) {
-        this.userId = userId;
+    public User(String username, String passwordHash, String email, UserRole role, int userId) {
         this.username = username;
         this.passwordHash = passwordHash;
+        this.userId = userId;
         this.email = email;
         this.role = role;
     }
@@ -64,11 +64,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", role=" + role +
-                '}';
+        return username+","+passwordHash+","+"email:"+email+",role:"+role+",UserId:"+userId;
     }
 }
