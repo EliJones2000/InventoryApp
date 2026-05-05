@@ -10,9 +10,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.Random;
@@ -34,8 +31,6 @@ public class signUpController {
     @FXML
     private TextField createUsername;
 
-    static List<Object> strg = new ArrayList<>();
-
     @FXML
     void signUpComplete(ActionEvent event) {
 
@@ -56,8 +51,6 @@ public class signUpController {
             int newid = userid + randomnum;
 
             User newuser = new User (username, password, email, User.UserRole.STAFF, newid);
-
-            strg = Collections.singletonList(newuser);
 
             storeUserData(newuser);
 
@@ -83,7 +76,7 @@ public class signUpController {
     }
 
     private void storeUserData(User newuser){
-        String data = strg.toString();
+        String data = newuser.toString();
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("users.txt", true))) {
             writer.write(data);
             writer.newLine(); // Adds a system-dependent newline character

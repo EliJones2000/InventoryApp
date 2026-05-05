@@ -30,8 +30,6 @@ public class LoginController {
         String pass = password.getText();
 
         if (checkLogin(user, pass)) {
-            wrongLogin.setText("Login Successful!");
-            // Proceed to next screen
 
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("inventory.fxml"));
@@ -44,6 +42,8 @@ public class LoginController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            wrongLogin.setText("Login Successful!");
+
         } else {
             wrongLogin.setText("Invalid credentials.");
         }
@@ -56,7 +56,7 @@ public class LoginController {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String[] parts = line.split(","); // Split by separator
-                if (parts.length == 2) {
+                if (parts.length == 5) {
                     if (parts[0].equals(username) && parts[1].equals(password)) {
                         return true;
                     }

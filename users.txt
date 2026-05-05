@@ -1,2 +1,3 @@
-elijah,1234
-hello,123
+
+elijah,1234,email:ej123@app.com,role:STAFF,UserId:1000017
+alex,2323,email:al23@app.com,role:STAFF,UserId:1000280
